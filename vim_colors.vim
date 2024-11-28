@@ -20,9 +20,8 @@ autocmd ColorScheme palenight hi CurSearch guifg=LightMagenta
 
 # g:disable_bg = 1
 
-colorscheme palenight
-set background=dark
-set termguicolors
+set termguicolors     # enable true colors support
+colorscheme ayu
 
 hi clear Conceal
 hi Conceal ctermbg=NONE ctermfg=LightCyan 
@@ -33,3 +32,10 @@ autocmd! FileType * RainbowParentheses
       \  '#282c34', '#EB6F92', '#31748F', '#F6C177', '#9CCFD8', '#C4A7E7', '#EBBCBA', '#E0DEF4',
       \  '#282c34', '#EB6F92', '#31748F', '#F6C177', '#9CCFD8', '#C4A7E7', '#EBBCBA', '#E0DEF4'
       \  ]
+
+# IndentLine {{
+g:indentLine_char = '▏'
+g:indentLine_first_char = '▏'
+g:indentLine_showFirstIndentLevel = 1
+g:indentLine_defaultGroup  = 'SpecialKey'
+#  }}
