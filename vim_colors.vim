@@ -18,7 +18,15 @@ autocmd ColorScheme rosepine hi StatusLineNC guibg=#1F1D2E
 autocmd ColorScheme palenight hi Search guifg=LightMagenta guibg=NONE
 autocmd ColorScheme palenight hi CurSearch guifg=LightMagenta
 
-# g:disable_bg = 1
+# ayu colorscheme fixes
+autocmd ColorScheme ayu hi jsFuncArgs guifg=#D4BFFF   # Function arguments 
+autocmd ColorScheme ayu hi jsFunction guifg=#FF7733
+autocmd ColorScheme ayu hi jsBooleanTrue guifg=#D4BFFF
+autocmd ColorScheme ayu hi jsBooleanFalse guifg=#D4BFFF
+autocmd ColorScheme ayu hi jsThis guifg=#36A3D9
+autocmd ColorScheme ayu hi Normal guibg=#0A0F14          # Background color
+# Clear syntax for any parentheses so rainbowparentheses work again
+autocmd FileType javascript syntax clear jsBracket jsParen jsParenDecorator jsParenIfElse jsParenWhile jsParenFor jsParenSwitch jsParenCatch jsFuncArgs jsClassBlock jsFuncBlock jsIfElseBlock jsTryCatchBlock jsFinallyBlock jsSwitchBlock jsRepeatBlock jsDestructuringBlock jsDestructuringArray jsObject jsBlock jsModuleGroup
 
 set termguicolors     # enable true colors support
 colorscheme ayu
@@ -27,11 +35,7 @@ hi clear Conceal
 hi Conceal ctermbg=NONE ctermfg=LightCyan 
 
 autocmd! FileType * RainbowParentheses
-
-# g:terminal_ansi_colors = [
-      \  '#282c34', '#EB6F92', '#31748F', '#F6C177', '#9CCFD8', '#C4A7E7', '#EBBCBA', '#E0DEF4',
-      \  '#282c34', '#EB6F92', '#31748F', '#F6C177', '#9CCFD8', '#C4A7E7', '#EBBCBA', '#E0DEF4'
-      \  ]
+g:rainbow#pairs = [['(', ')'], ['[', ']'], ['{', '}']]
 
 # IndentLine {{
 g:indentLine_char = '▏'
