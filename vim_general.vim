@@ -10,7 +10,7 @@ set expandtab
 set nowrap
 set ttimeout
 set ttimeoutlen=0
-set colorcolumn=100
+# set colorcolumn=100
 set wildmenu
 set wildmode=longest:full
 set wildoptions=pum
@@ -27,17 +27,26 @@ set pumheight=20
 set undofile
 set autoread
 set foldmethod=indent
-set foldlevel=2
-set foldcolumn=2
+set foldlevel=99
+# set foldcolumn=2
+set nomodeline
 
 filetype plugin on
 
 def EscCond(): string
-  if mode() == 't'
-    return "\<C-\>\<C-n>"
+  var res = nr2char(27)
+  if mode() ==# 't'
+    res = '\<C-\\>\<C-n>'
   endif
-  return "\<Esc>"
+  return res
 enddef
+
+autocmd BufWritePre * :%s/\s\+$//e
+
+# Useful keybindings
+g:mapleader = " "
+nnoremap <leader>n :cnext<CR>zz
+nnoremap <leader>p :cprev<CR>zz
 
 # Remap
 tnoremap <silent> <expr> <Esc> EscCond()
@@ -48,6 +57,9 @@ vnoremap <silent> <S-up> <Up>
 vnoremap <silent> <S-down> <Down>
 nnoremap <silent> <C-right> <Nop>
 nnoremap <silent> <C-left> <Nop>
+nnoremap <silent> <Mod4>. <Nop>
+nnoremap <buffer> gi <Cmd>LspGotoImpl<CR>
+# nmap <unique> <leader>t <Plug>GenerateDiagram
 
 # Autopairs
 inoremap {<cr> {<cr>}<ESC>kA<C-m>
@@ -59,7 +71,7 @@ noremap <silent> <C-z> <nop>
 nnoremap r <C-r>
 cabbrev W w
 cabbrev Q q
-nnoremap <Space> /
+# nnoremap <Space> /
 
 # Cursor
 if !has('win32')
@@ -84,11 +96,8 @@ cnoreabbrev Fa FindAll
 cnoreabbrev fA FindAll
 cnoreabbrev FA FindAll
 
-# :yt - yank this word
-nnoremap yt yaw
-
 # Windows
-cabbrev new vnew
+# cabbrev new vnew
 autocmd VimResized * silent execute 'horizontal wincmd ='
 
 # Tabs
@@ -138,6 +147,7 @@ cnoreabbrev bB edit #
 cnoreabbrev BB edit #
 
 # Fuzzy
+# FZF_DEFAULT_OPTS=$FZF_DEFAULT_OPTS . ' --bind "alt-a:select-all,alt-d:deselect-all"'
 nnoremap <silent> <C-p> :Files<CR>
 nnoremap <silent> <S-F> :RG<CR>
 cnoreabbr <silent> bf :FuzzyBuffers
@@ -203,10 +213,36 @@ set backupdir=~/.vim/backup//
 set directory=~/.vim/swp//
 set undodir=~/.vim/undo//
 
+
+
+def BuildQuickfixList(lines: list<string>)
+  echo lines
+  final qf_entries = []
+
+  for val in lines
+    var parts = split(val, ':', false)
+
+    if len(parts) >= 2
+      var file = parts[0]
+      var lnum = str2nr(parts[1])
+      var col = (len(parts) >= 3 && parts[2] != '') ? str2nr(parts[2]) : 1
+      var text = len(parts) >= 4 ? parts[3] : ''
+      qf_entries->add({ 'filename': file, 'lnum': lnum, 'col': col, 'text': text })
+    endif
+  endfor
+
+  setqflist([], 'r', {'items': qf_entries})
+  if !empty(qf_entries)
+    cc
+  endif
+enddef
+
 g:fzf_action = {
-      \ 'ctrl-t': 'tab split',
-      \ 'ctrl-s': 'split',
-      \ 'ctrl-v': 'vsplit' }
+  'ctrl-q': function('BuildQuickfixList'),
+  'ctrl-t': 'tab split',
+  'ctrl-x': 'split',
+  'ctrl-v': 'vsplit',
+}
 
 g:fzf_colors = {
       \ 'fg':      ['fg', 'Normal'],
@@ -224,3 +260,6 @@ g:fzf_colors = {
       \ 'header':  ['fg', 'Comment'] }
 g:fzf_layout = { 'down': '40%' }
 g:fzf_history_dir = '~/.local/share/fzf-history'
+
+# command! RG call fzf#vim#grep2(<q-args>, '.', {'options': ['--no-ignore-parents']}, <bang>0)
+command! -bang -nargs=* RG call fzf#vim#grep2("rg --column --line-number --no-heading --color=always -u --smart-case -- ", <q-args>, fzf#vim#with_preview(), <bang>0)',

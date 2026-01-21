@@ -2,29 +2,29 @@ vim9script
 # Snippets
 # Add snippets :UltiSnipsEdit
 # var snippetDir = $VIM_CONFIG .. "/snippets"
-# g:UltiSnipsSnippetStorageDirectoryForUltiSnipsEdit = snippetDir 
+# g:UltiSnipsSnippetStorageDirectoryForUltiSnipsEdit = snippetDir
 # g:UltiSnipsSnippetDirectories = [snippetDir]
-# g:UltiSnipsExpandTrigger = "<c-m>" 
+# g:UltiSnipsExpandTrigger = "<c-m>"
 # g:UltiSnipsJumpForwardTrigger = "<s-tab>"
 
 #Lsp
 nnoremap <silent> <C-m> :LspGotoDefinition<CR>
 cnoreabbrev ra LspRename
-cnoreabbrev fr LspPeekReferences  
+cnoreabbrev fr LspPeekReferences
 cnoreabbrev gd LspHover
- 
+
 # if has('win32')
 #   autocmd! BufWritePre * silent :LspFormat | silent! :s/\r\(\n\)/\1/g
 # else
 #   autocmd! BufWritePre * silent :LspFormat
 # endif
- 
+
 #Options
 var lspOpts = {
       \ autoHighlight: true,
       \ omniComplete: true,
       \ useBufferCompletion: false,
-      \ autoComplete: true,
+      \ autoComplete: false,
       \ snippetSupport: false,
       \ ultisnipsSupport: false,
       \ showDiagWithVirtualText: true,
@@ -33,7 +33,7 @@ var lspOpts = {
       \ showInlayHints: true,
       \ noNewlineInCompletion: true,
       \ outlineOnRight: true,
-      \ ignoreMissingServer: true, 
+      \ ignoreMissingServer: true,
       \ highlightDiagInline: true,
       \ showDiagWithSign: true,
       \ diagSignErrorText: "E:",
@@ -43,7 +43,7 @@ var lspOpts = {
       \ filterCompletionDuplicates: true,
       \ }
 
-# autocmd VimEnter * call LspOptionsSet(lspOpts)
+autocmd VimEnter * call LspOptionsSet(lspOpts)
 
 # # Higlight pum options
 augroup LspSetup
@@ -58,7 +58,7 @@ augroup END
 # npm i -g vscode-json-languageserver
 # npm i -g bash-language-server
 # npm i -g vscode-html-languageserver-bin
-# sudo snap install marksman 
+# sudo snap install marksman
 # sudo apt install clangd
 
 # var file = $VIM_CONFIG .. '/lsp-config.json'
@@ -67,18 +67,24 @@ augroup END
 
 var lspServers = [
       \ {
-      \ name: 'typescriptls',
-      \ filetype: ['javascript', 'typescript'],
-      \ path: '/usr/local/bin/typescript-language-server',
-      \ args: ['--stdio']
+      \   "name": 'typescriptls',
+      \   "filetype": ['javascript', 'typescript'],
+      \   "path": 'tsserver',
+      \   "args": ['--stdio']
       \ },
       \ {
-      \ name: 'pythonls',
-      \ filetype: 'python',
-      \ path: '/usr/local/bin/pyls',
-      \ args: ['--check-parent-process', '-v']
+      \   "name": "vim-ls",
+      \   "filetype": ["vim"],
+      \   "path": "vim-language-server",
+      \   "args": ["--stdio"]
+      \ },
+      \ {
+      \   "filetype": ["json"],
+      \   "path": "vscode-json-languageserver",
+      \   "args": ["--stdio"]
       \ }
       \ ]
+
 autocmd VimEnter * call LspAddServer(lspServers)
 
 # ALE
